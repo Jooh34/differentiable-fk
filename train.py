@@ -7,15 +7,15 @@ from models.fkopt import fkopt_net
 from data.fkopt_data import FkoptDataset
 import time
 
-learning_rate = 0.0001
+learning_rate = 0.001
 num_joint = 10
 batch_size = 1024
-training_epochs = 1000
+training_epochs = 50
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 SAVE_PATH = './checkpoints/fkopt.pt'
 
-test_data = torch.tensor([[0.5, 0.5, 0.5]]).to(device)
+test_data = torch.tensor([[1.0, 1.0, 1.0]]).to(device)
 test_results = []
 
 def train():
@@ -39,8 +39,8 @@ def train():
             cost.backward()
             optimizer.step()
 
-        print(Y[0])
-        print(hypothesis[:, -1][0])
+        # print(Y[0])
+        # print(hypothesis[:, -1][0])
 
         # run model and save image for this epoch
         print('[Epoch: {:>4}] cost = {:>.9}'.format(epoch + 1, cost))

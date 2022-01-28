@@ -8,7 +8,7 @@ class fkopt_net(nn.Module):
         self.num_joint = num_joint
         self.out_feature = num_joint * 4
 
-        self.simple_encoder = simple_encoder(self.out_feature)
+        self.simple_encoder = simple_encoder(self.num_joint, self.out_feature)
         
 
     def forward(self, input):
@@ -60,23 +60,40 @@ class fkopt_net(nn.Module):
         
 
 class simple_encoder(nn.Module):
-    def __init__(self, out_feature):
+    def __init__(self, num_joint, out_feature):
         super().__init__()
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
         self.layer = nn.Sequential(
             nn.Linear(3, 1024),
-            nn.ReLU(True),
+            nn.LeakyReLU(),
             nn.Dropout(0.1),
             nn.Linear(1024, 1024),
-            nn.ReLU(True),
+            nn.LeakyReLU(),
             nn.Dropout(0.1),
             nn.Linear(1024, 1024),
-            nn.ReLU(True),
+            nn.LeakyReLU(),
             nn.Dropout(0.1),
             nn.Linear(1024, out_feature),
             nn.Tanh(),
         ).to(device)
+        # stride = out_feature/2 -4
+        # self.layer = nn.Sequential(
+        #     nn.Unflatten(1, (1,3)),
+        #     nn.ConvTranspose1d(1, 1, 8, int(stride), padding=0, bias=False),
+        #     nn.Flatten(),
+        #     nn.Linear(60, 512),
+        #     nn.LeakyReLU(),
+        #     nn.Dropout(0.1),
+        #     nn.Linear(512, 512),
+        #     nn.LeakyReLU(),
+        #     nn.Dropout(0.1),
+        #     nn.Linear(512, 512),
+        #     nn.LeakyReLU(),
+        #     nn.Dropout(0.1),
+        #     nn.Linear(512, out_feature),
+        #     nn.Tanh(),
+        # ).to(device)
     
     def forward(self, x):
         return self.layer(x)
