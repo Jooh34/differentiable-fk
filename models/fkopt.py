@@ -26,9 +26,9 @@ class fkopt_net(nn.Module):
         # (B, 4, 4)
         T = torch.tensor([
             [1, 0, 0, 0],
-            [0, 1, 0, 0.2],
+            [0, 1, 0, 0.1],
             [0, 0, 1, 0],
-            [1, 0, 0, 1],
+            [0, 0, 0, 1],
         ], dtype=torch.float, device=device)
         T = T.unsqueeze(dim=0).repeat((B,1,1))
 
@@ -37,23 +37,22 @@ class fkopt_net(nn.Module):
             R = quaternion_to_matrix(joints[:, j*4:j*4+4])
 
             # (B, 4, 4)
-            coordi = torch.bmm(R,T)
+            coordi = torch.bmm(T,R)
 
             if j == 0:
                 joint_coordinates[:, j] = coordi
             else:
-                joint_coordinates[:, j] = torch.bmm(coordi, joint_coordinates[:, j-1].clone())
+                joint_coordinates[:, j] = torch.bmm(joint_coordinates[:, j-1].clone(), coordi)
 
         # (B, num_joint, 3)
         fake_points = torch.zeros((B, self.num_joint, 3), device=device)
 
-        O = torch.tensor([0,0,0,1], dtype=torch.float, device=device).unsqueeze(dim=-1).repeat((B,1,1))
         for j in range(self.num_joint):
-            # (B, num_joint, 4, 1)
-            points = torch.bmm(joint_coordinates[:, j], O)
+            joint = torch.transpose(joint_coordinates, 2, 3)
+            fake_points[:, j] = joint[:, j, 3, :3] / (joint[:, j, 3, 3].unsqueeze(dim=-1) + 1e-9)
+            # fake_points[:, j] = joint[:, j, 3, :3]
 
-            # (B, num_joint, 3)
-            fake_points[:, j] = (points[:, :3].squeeze(dim=-1) / (points[:, 3] + 1e-9))
+        #### fk - tester ###
 
         # fake_points = (B, num_joint, 3)
         return fake_points
