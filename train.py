@@ -9,6 +9,7 @@ import time
 
 learning_rate = 0.001
 num_joint = 10
+joint_length = 0.4
 batch_size = 1024
 training_epochs = 50
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -19,7 +20,7 @@ test_data = torch.tensor([[1.0, 1.0, 1.0]]).to(device)
 test_results = []
 
 def train():
-    model = fkopt_net(num_joint).to(device)
+    model = fkopt_net(num_joint, joint_length).to(device)
     
     loss = nn.MSELoss(reduction='sum')
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)

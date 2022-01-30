@@ -3,10 +3,11 @@ import torch.nn as nn
 from graphics.rotation import quaternion_to_matrix
 
 class fkopt_net(nn.Module):
-    def __init__(self, num_joint):
+    def __init__(self, num_joint, joint_length):
         super().__init__()
         self.num_joint = num_joint
         self.out_feature = num_joint * 4
+        self.joint_length = joint_length
 
         self.simple_encoder = simple_encoder(self.num_joint, self.out_feature)
         
@@ -26,7 +27,7 @@ class fkopt_net(nn.Module):
         # (B, 4, 4)
         T = torch.tensor([
             [1, 0, 0, 0],
-            [0, 1, 0, 0.4],
+            [0, 1, 0, self.joint_length],
             [0, 0, 1, 0],
             [0, 0, 0, 1],
         ], dtype=torch.float, device=device)
