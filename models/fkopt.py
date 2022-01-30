@@ -38,7 +38,7 @@ class fkopt_net(nn.Module):
             R = quaternion_to_matrix(joints[:, j*4:j*4+4])
 
             # (B, 4, 4)
-            coordi = torch.bmm(T,R)
+            coordi = torch.bmm(R,T)
 
             if j == 0:
                 joint_coordinates[:, j] = coordi

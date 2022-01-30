@@ -13,6 +13,7 @@ for i in range(len(points_list)):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     points = points_list[i]
+    ax.plot([0, points[0][0]], [0, points[0][1]], zs=[0, points[0][2]])
     for j in range(len(points)):
         if j == 0: continue
 
