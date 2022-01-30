@@ -26,7 +26,7 @@ class fkopt_net(nn.Module):
         # (B, 4, 4)
         T = torch.tensor([
             [1, 0, 0, 0],
-            [0, 1, 0, 0.1],
+            [0, 1, 0, 0.4],
             [0, 0, 1, 0],
             [0, 0, 0, 1],
         ], dtype=torch.float, device=device)
@@ -51,8 +51,6 @@ class fkopt_net(nn.Module):
             joint = torch.transpose(joint_coordinates, 2, 3)
             fake_points[:, j] = joint[:, j, 3, :3] / (joint[:, j, 3, 3].unsqueeze(dim=-1) + 1e-9)
             # fake_points[:, j] = joint[:, j, 3, :3]
-
-        #### fk - tester ###
 
         # fake_points = (B, num_joint, 3)
         return fake_points

@@ -36,7 +36,20 @@ def train():
             optimizer.zero_grad()
             hypothesis = model(X)
             cost = loss(hypothesis[:, -1], Y)
-            cost.backward()
+            cost.backward(retain_graph=True)
+
+            j = hypothesis.shape[1]
+            batch_y = hypothesis[:, 0, 1]
+            for i in range(1, j):
+                batch_y += (hypothesis[:, i, 1] + hypothesis[:, i, 2])
+
+            loss_Y = batch_y[0]
+            for b in range(1, batch_y.shape[0]):
+                loss_Y += batch_y[b]
+
+            loss_Y = loss_Y * 0.01
+            loss_Y.backward()
+                
             optimizer.step()
 
         # print(Y[0])
