@@ -1,6 +1,6 @@
 # differentiable-fk
 
-## differentiable forward kinemetics wit pytorch
+## differentiable forward kinemetics with pytorch
 
 ### Inverse Kinematics root (0,0,0) to end-point (1,1,1)
 
