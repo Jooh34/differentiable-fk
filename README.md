@@ -1,6 +1,6 @@
-# fk-optimizer
+# differentiable-fk
 
-## differentiable fk-layer
+## differentiable forward kinemetics wit pytorch
 
 ### Inverse Kinematics root (0,0,0) to end-point (1,1,1)
 
